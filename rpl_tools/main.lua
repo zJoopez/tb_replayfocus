@@ -1,5 +1,4 @@
 -- /ls rpl_tools/rpl_tools/main.lua
-require("system.replays_manager")
 require("toriui.uielement")
 
 --variables
@@ -17,12 +16,7 @@ local function custom_echo(msg, color)
     echo("^".. COLORS.BLOSSOM .."[ReplayFocus] ^"..color .. msg)
 end
 
-local function rewindIfOutOfBounds()
-    local ws = get_world_state()
-    if ws.replay_mode == 0 then
-        return
-    end
-
+local function rewindIfOutOfBounds(ws)
     local currentFrame = ws.match_frame or 0
     if currentFrame < replayBounds.startFrame or currentFrame > replayBounds.endFrame then
         rewind_replay_to_frame(replayBounds.startFrame)
@@ -36,12 +30,8 @@ if get_option("replaycache") < 1 then set_option("replaycache", 2) end
 custom_echo("Activating Replay monitoring", COLORS.GREEN)
 add_hook("enter_frame", "keepReplayWithinBounds", function()
     local ws = get_world_state()
-    if ws.replay_mode ~= 0 then
-        if not inReplayMode then
-            inReplayMode = true
-        end
-        rewindIfOutOfBounds()
-    else
-        inReplayMode = false
+    if ws.match_frame% 20 > 0 then return --check every 20 frames to reduce overhead
+    elseif ws.replay_mode ~= 0 then
+        rewindIfOutOfBounds(ws)
     end
 end)

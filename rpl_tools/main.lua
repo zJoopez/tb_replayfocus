@@ -84,7 +84,7 @@ local windowHolder, windowWorkArea, windowMover = TBMenu:spawnMoveableWindow({
     x = 10,
     y = 100,
     w = 320,
-    h = 300,
+    h = 320,
 })
 
 local content = windowWorkArea:addChild({
@@ -97,7 +97,7 @@ local titleView = content:addChild({
     size = { content.size.w, 30 },
     bgColor = { 0, 0, 0, 0 }
 })
-titleView:addAdaptedText(true, "ReplayFocus Controls", nil, nil, FONTS.MEDIUM, CENTER, 0.8)
+titleView:addAdaptedText(true, "ReplayFocus", nil, nil, FONTS.MEDIUM, CENTER, 0.9)
 
 -- Mod Loading Toggle
 local modLabelView = content:addChild({
@@ -218,6 +218,22 @@ local function spawnEndSlider()
         end)
 end
 spawnEndSlider()
+
+-- info
+local copyright = content:addChild({
+    pos = { 0, content.size.h - 35 },
+    size = { content.size.w, 15 },
+    bgColor = { 0, 0, 0, 0 }
+})
+copyright:addAdaptedText(true, "F1 shows/hides window", nil, nil, FONTS.SMALL, CENTER, 0.6)
+
+-- copyright
+local copyright = content:addChild({
+    pos = { 0, content.size.h - 20 },
+    size = { content.size.w, 15 },
+    bgColor = { 0, 0, 0, 0 }
+})
+copyright:addAdaptedText(true, "script by joopez", nil, nil, FONTS.SMALL, CENTER, 0.6)
 
 -- General
 

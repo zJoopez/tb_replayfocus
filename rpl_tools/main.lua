@@ -5,24 +5,24 @@
 -- /ls rpl_tools/rpl_tools/main.lua
 require("toriui.uielement")
 
-
 -- Variables
-
-local replayBounds = {
-    startFrame = 200,
-    endFrame = 400
-}
 
 local tempReplayName = "replayfocus-tmp"
 local hookName = "rpl_tools_hook"
-local ws = get_world_state()
-local modname = get_game_rules().mod
 local minRange = 100
 
+local ws = get_world_state()
+local modname = get_game_rules().mod
 local edited = false
 local waitingForModDownload = false
 
+local replayBounds = {
+    startFrame = 0,
+    endFrame = minRange
+}
+
 -- UI toggles
+local uiMinimized = false
 local autoModLoading = false
 local autoDefaultTextures = false
 local autoRewinding = true
@@ -81,7 +81,7 @@ end
 
 -- UI
 local windowHolder, windowWorkArea, windowMover = TBMenu:spawnMoveableWindow({
-    x = 100,
+    x = 10,
     y = 100,
     w = 320,
     h = 300,
@@ -90,7 +90,6 @@ local windowHolder, windowWorkArea, windowMover = TBMenu:spawnMoveableWindow({
 local content = windowWorkArea:addChild({
     pos = { 10, 15 },
     size = { windowWorkArea.size.w - 20, windowWorkArea.size.h - 20 },
-    bgColor = { 0, 0, 0, 0 }
 }, true)
 
 -- Title
@@ -136,7 +135,7 @@ local rewindLabelView = content:addChild({
     size = { content.size.w - 55, 25 },
     bgColor = { 0, 0, 0, 0 }
 })
-rewindLabelView:addAdaptedText(true, "Rewind", nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
+rewindLabelView:addAdaptedText(true, "Focus", nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
 local rewindToggleView = content:addChild({
     pos = { content.size.w - 30, 95 },
     size = { 30, 25 }
@@ -264,5 +263,13 @@ add_hook("downloader_complete", "hookName", function()
         waitingForModDownload = false
         play_next_replay()
         play_prev_replay()
+    end
+end)
+
+add_hook("key_up", "hookName", function(key)
+    if key == 282 and content.displayed then --F1
+        windowHolder:hide(true)
+    else
+        windowHolder:show(true)
     end
 end)

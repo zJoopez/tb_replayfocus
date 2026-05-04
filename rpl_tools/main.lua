@@ -1,3 +1,7 @@
+-- Created by joopez
+-- Project: ReplayFocus v.0.9
+-- Built for Toribash v.5.76 
+
 -- /ls rpl_tools/rpl_tools/main.lua
 require("toriui.uielement")
 
@@ -17,8 +21,8 @@ local edited = false
 local waitingForModDownload = false
 
 -- UI toggles
-local autoModLoading = true
-local autoDefaultTextures = true
+local autoModLoading = false
+local autoDefaultTextures = false
 local autoRewinding = true
 
 -- Functions
@@ -77,8 +81,8 @@ local function createControlPanel()
     local windowHolder, windowWorkArea, windowMover = TBMenu:spawnMoveableWindow({
         x = 100,
         y = 100,
-        w = 300,
-        h = 350
+        w = 320,
+        h = 300,
     })
 
     local content = windowWorkArea:addChild({
@@ -115,7 +119,7 @@ local function createControlPanel()
         size = { content.size.w - 55, 25 },
         bgColor = { 0, 0, 0, 0 }
     })
-    textureLabelView:addAdaptedText(true, "Default Textures", nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
+    textureLabelView:addAdaptedText(true, "Set Default Textures", nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
     local textureToggleView = content:addChild({
         pos = { content.size.w - 30, 65 },
         size = { 30, 25 }
@@ -142,24 +146,24 @@ local function createControlPanel()
     -- Playback range heading
     local rangeHeadingView = content:addChild({
         pos = { 0, 125 },
-        size = { content.size.w, 22 },
-        bgColor = { 0, 0, 0, 0 }
-    })
-    rangeHeadingView:addAdaptedText(true, "Range: ".. replayBounds.startFrame .. " - " .. replayBounds.endFrame, nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
-
-    -- Start Frame Slider
-    local sliderLabelView = content:addChild({
-        pos = { 0, 150 },
         size = { content.size.w, 25 },
         bgColor = { 0, 0, 0, 0 }
     })
-    sliderLabelView:addAdaptedText(true, "Start Frame: " .. replayBounds.startFrame, nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
+    rangeHeadingView:addAdaptedText(true, "Focus Frames: ".. replayBounds.startFrame .. " - " .. replayBounds.endFrame, nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
+
+    -- Start Frame Slider
+    local sliderLabelView = content:addChild({
+        pos = { 5, 150 },
+        size = { content.size.w - 5, 35 },
+        bgColor = { 0, 0, 0, 0 }
+    })
+    sliderLabelView:addAdaptedText(true, "Start", nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
 
     local sliderView = content:addChild({
-        pos = { 0, 175 },
-        size = { content.size.w, 35 }
+        pos = { content.size.w / 4, 150 },
+        size = { content.size.w * 0.75, 35 }
     })
-    local startSlider = TBMenu:spawnSlider2(sliderView, { x = 5, y = 5, w = content.size.w - 10, h = 25 }, replayBounds.startFrame, {
+    local startSlider = TBMenu:spawnSlider2(sliderView, { x = 5, y = 5, w = sliderView.size.w - 10, h = 28 }, replayBounds.startFrame, {
         minValue = 0,
         maxValue = 1000,
         decimal = 0,
@@ -169,33 +173,30 @@ local function createControlPanel()
         replayBounds.startFrame = newStartFrame
         replayBounds.endFrame = replayBounds.startFrame + currentOffset
 
-        sliderLabelView:addAdaptedText(true, "Start Frame: " .. replayBounds.startFrame, nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
-        rangeHeadingView:addAdaptedText(true, "Range: ".. replayBounds.startFrame .. " - " .. replayBounds.endFrame, nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
+        rangeHeadingView:addAdaptedText(true, "Focus Frames: ".. replayBounds.startFrame .. " - " .. replayBounds.endFrame, nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
     end)
 
     -- End Frame Offset Slider
     local endFrameLabelView = content:addChild({
-        pos = { 0, 210 },
-        size = { content.size.w, 25 },
+        pos = { 5, 185 },
+        size = { content.size.w - 5, 35 },
         bgColor = { 0, 0, 0, 0 }
     })
-    endFrameLabelView:addAdaptedText(true, "Focus Frames: " .. (replayBounds.endFrame - replayBounds.startFrame), nil, nil,
+    endFrameLabelView:addAdaptedText(true, "Frames", nil, nil,
         FONTS.LMEDIUM, LEFTMID, 0.7)
 
     local endSliderView = content:addChild({
-        pos = { 0, 235 },
-        size = { content.size.w, 35 }
+        pos = { content.size.w / 4, 185 },
+        size = { content.size.w * 0.75, 35 }
     })
-    local endslider = TBMenu:spawnSlider2(endSliderView, { x = 5, y = 5, w = content.size.w - 10, h = 25 },
-        replayBounds.endFrame - replayBounds.startFrame, {
+    local endslider = TBMenu:spawnSlider2(endSliderView, { x = 5, y = 5, w = endSliderView.size.w - 10, h = 28 },
+        replayBounds.endFrame, {
             minValue = 100,
             maxValue = 1000,
             decimal = 0,
         }, function(value)
             replayBounds.endFrame = replayBounds.startFrame + math.floor(value)
-            endFrameLabelView:addAdaptedText(true, "Focus Frames: " .. (replayBounds.endFrame - replayBounds.startFrame), nil, nil,
-                FONTS.LMEDIUM, LEFTMID, 0.7)
-            rangeHeadingView:addAdaptedText(true, "Range: ".. replayBounds.startFrame .. " - " .. replayBounds.endFrame, nil, nil,
+            rangeHeadingView:addAdaptedText(true, "Focus Frames: ".. replayBounds.startFrame .. " - " .. replayBounds.endFrame, nil, nil,
                 FONTS.LMEDIUM, LEFTMID, 0.7)
     end)
 

@@ -1,8 +1,8 @@
 -- Created by joopez
 -- Project: ReplayFocus v.0.9
 -- Built for Toribash v.5.76
+-- /ls replayfocus.lua
 
--- /ls rpl_tools/rpl_tools/main.lua
 require("toriui.uielement")
 
 -- Variables
@@ -52,7 +52,6 @@ end
 
 local function customFindMod()
     modname = get_game_rules().mod
-    custom_echo("Current mod: " .. modname, COLORS.BLUE)
     return modname == "classic.tbm" or find_mod(modname)
 end
 local function customDownloadMod()

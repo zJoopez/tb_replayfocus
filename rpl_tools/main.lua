@@ -62,6 +62,19 @@ local function customDownloadMod()
     runCmd("dl " .. shortName)
 end
 
+local function modCheck()
+    if autoModLoading and not customFindMod() then
+        customDownloadMod()
+        return
+    end
+end
+
+local function textureCheck()
+    if autoDefaultTextures then
+        setDefaultTextures()
+    end
+end
+
 local function rewindIfOutOfBounds()
     if (edited) then
         createTempReplay()
@@ -111,6 +124,7 @@ local modToggleView = content:addChild({
 })
 TBMenu:spawnToggle2(modToggleView, nil, autoModLoading and 1 or 0, function(value)
     autoModLoading = (value == 1 or value == true)
+    modCheck()
 end)
 
 -- Default Textures Toggle
@@ -126,6 +140,7 @@ local textureToggleView = content:addChild({
 })
 TBMenu:spawnToggle2(textureToggleView, nil, autoDefaultTextures and 1 or 0, function(value)
     autoDefaultTextures = (value == 1 or value == true)
+    textureCheck()
 end)
 
 -- Rewind Toggle
@@ -255,14 +270,9 @@ add_hook("exit_freeze", hookName, function()
 end)
 
 add_hook("match_begin", hookName, function()
-    if autoModLoading and not customFindMod() then
-        customDownloadMod()
-        return
-    end
-    if autoDefaultTextures then
-        setDefaultTextures()
-    end
     ws = get_world_state()
+    modCheck()
+    textureCheck()
     spawnStartSlider()
     spawnEndSlider()
     updateRangeHeading()
@@ -279,14 +289,14 @@ end)
 
 add_hook("key_up", hookName, function(key)
     if key ~= 282 then return end --F1
-    if content.displayed then 
+    if content.displayed then
         windowHolder:hide(true)
     else
         windowHolder:show(true)
     end
 end)
 
-windowHolder.killAction = function ()
+windowHolder.killAction = function()
     remove_hooks(hookName)
     custom_echo("Exit complete, matanee~~", COLORS.VIOLET)
 end

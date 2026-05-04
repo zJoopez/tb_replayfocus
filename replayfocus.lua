@@ -219,11 +219,12 @@ local endSliderView = content:addChild({
 local function spawnEndSlider()
     endSliderView:kill(true)
     replayBounds.endFrame = math.min(replayBounds.endFrame, ws.game_frame) -- ensure end frame is not out of bounds on spawn
+    local max = math.min(2000,ws.game_frame) -- upper limit for better usability 
     return TBMenu:spawnSlider2(endSliderView, { x = 5, y = 5, w = endSliderView.size.w - 10, h = 28 },
         replayBounds.endFrame - replayBounds.startFrame, {
             minValue = minRange,
-            maxValue = ws.game_frame,
-            maxValueDisp = ws.game_frame,
+            maxValue = max,
+            maxValueDisp = max,
             darkerMode = true
         }, function(value)
             replayBounds.endFrame = replayBounds.startFrame + math.floor(value)
@@ -233,12 +234,12 @@ end
 spawnEndSlider()
 
 -- info
-local copyright = content:addChild({
+local info = content:addChild({
     pos = { 0, content.size.h - 35 },
     size = { content.size.w, 15 },
     bgColor = { 0, 0, 0, 0 }
 })
-copyright:addAdaptedText(true, "F1 shows/hides window", nil, nil, FONTS.SMALL, CENTER, 0.6)
+info:addAdaptedText(true, "F1 shows/hides window", nil, nil, FONTS.SMALL, CENTER, 0.6)
 
 -- copyright
 local copyright = content:addChild({
@@ -250,7 +251,7 @@ copyright:addAdaptedText(true, "script by joopez", nil, nil, FONTS.SMALL, CENTER
 
 -- General
 
-if get_option("replaycache") < 1 then set_option("replaycache", 2) end
+if get_option("replaycache") < 2 then set_option("replaycache", 2) end
 
 -- Hooks
 

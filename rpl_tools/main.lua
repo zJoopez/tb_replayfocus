@@ -79,7 +79,7 @@ local function rewindIfOutOfBounds()
     end
 end
 
--- UI Creation
+-- UI
 local windowHolder, windowWorkArea, windowMover = TBMenu:spawnMoveableWindow({
     x = 100,
     y = 100,
@@ -151,8 +151,11 @@ local rangeHeadingView = content:addChild({
     size = { content.size.w, 25 },
     bgColor = { 0, 0, 0, 0 }
 })
-rangeHeadingView:addAdaptedText(true, "Focus Frames: " .. replayBounds.startFrame .. " - " .. replayBounds.endFrame,
-    nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
+local function updateRangeHeading()
+    rangeHeadingView:addAdaptedText(true, "Focus Frames: " .. replayBounds.startFrame .. " - " .. replayBounds.endFrame,
+        nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
+end
+updateRangeHeading()   
 
 -- Start Frame Slider
 local sliderLabelView = content:addChild({
@@ -183,13 +186,10 @@ local function spawnStartSlider()
             replayBounds.startFrame = math.floor(value)
             replayBounds.endFrame = replayBounds.startFrame + currentOffset
 
-            rangeHeadingView:addAdaptedText(true,
-                "Focus Frames: " .. replayBounds.startFrame .. " - " .. replayBounds.endFrame, nil, nil, FONTS.LMEDIUM,
-                LEFTMID, 0.7)
+            updateRangeHeading()
         end)
 end
-
-local startSlider = spawnStartSlider(ws.game_frame)
+spawnStartSlider()
 
 -- End Frame Offset Slider
 local endFrameLabelView = content:addChild({
@@ -215,13 +215,10 @@ local function spawnEndSlider()
             darkerMode = true
         }, function(value)
             replayBounds.endFrame = replayBounds.startFrame + math.floor(value)
-            rangeHeadingView:addAdaptedText(true,
-                "Focus Frames: " .. replayBounds.startFrame .. " - " .. replayBounds.endFrame, nil, nil,
-                FONTS.LMEDIUM, LEFTMID, 0.7)
+            updateRangeHeading()
         end)
 end
-
-local endslider = spawnEndSlider()
+spawnEndSlider()
 
 -- General
 
@@ -230,6 +227,9 @@ remove_hooks(hookName)
 if get_option("replaycache") < 1 then set_option("replaycache", 2) end
 
 custom_echo("Activating Replay monitoring", COLORS.GREEN)
+
+-- Hooks
+
 add_hook("enter_frame", "hookName", function()
     ws = get_world_state()
     if ws.match_frame % 10 ~= 0 then return end --check every 10 frames to reduce overhead
@@ -253,8 +253,9 @@ add_hook("match_begin", "hookName", function()
         setDefaultTextures()
     end
     ws = get_world_state()
-    startSlider = spawnStartSlider()
-    endslider = spawnEndSlider()
+    spawnStartSlider()
+    spawnEndSlider()
+    updateRangeHeading() 
 end)
 
 add_hook("downloader_complete", "hookName", function()

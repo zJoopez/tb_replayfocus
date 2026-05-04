@@ -22,7 +22,6 @@ local replayBounds = {
 }
 
 -- UI toggles
-local uiMinimized = false
 local autoModLoading = false
 local autoDefaultTextures = false
 local autoRewinding = true
@@ -70,12 +69,12 @@ local function rewindIfOutOfBounds()
         edited = false
         return
     end
-    local startFrame = math.min( replayBounds.startFrame, ws.game_frame - minRange) -- extra protection
+    local startFrame = math.min(replayBounds.startFrame, ws.game_frame - minRange) -- extra protection
     local currentFrame = ws.match_frame or 0
     if currentFrame < startFrame or currentFrame > replayBounds.endFrame then
         rewind_replay_to_frame(startFrame)
-        custom_echo("Replay out of bounds at frame " .. currentFrame .. ", rewinding to " .. startFrame,
-            COLORS.VIOLET)
+        -- custom_echo("Replay out of bounds at frame " .. currentFrame .. ", rewinding to " .. startFrame,
+        --     COLORS.VIOLET)
     end
 end
 
@@ -154,7 +153,7 @@ local function updateRangeHeading()
     rangeHeadingView:addAdaptedText(true, "Focus Frames: " .. replayBounds.startFrame .. " - " .. replayBounds.endFrame,
         nil, nil, FONTS.LMEDIUM, LEFTMID, 0.7)
 end
-updateRangeHeading()   
+updateRangeHeading()
 
 -- Start Frame Slider
 local sliderLabelView = content:addChild({
@@ -237,15 +236,11 @@ copyright:addAdaptedText(true, "script by joopez", nil, nil, FONTS.SMALL, CENTER
 
 -- General
 
-remove_hooks(hookName)
-
 if get_option("replaycache") < 1 then set_option("replaycache", 2) end
-
-custom_echo("Activating Replay monitoring", COLORS.GREEN)
 
 -- Hooks
 
-add_hook("enter_frame", "hookName", function()
+add_hook("enter_frame", hookName, function()
     ws = get_world_state()
     if ws.match_frame % 10 ~= 0 then return end --check every 10 frames to reduce overhead
     if not get_replay_cache() then return end   --if replay cache is not active, do nothing
@@ -254,12 +249,12 @@ add_hook("enter_frame", "hookName", function()
     end
 end)
 
-add_hook("exit_freeze", "hookName", function()
+add_hook("exit_freeze", hookName, function()
     ws = get_world_state()
     if (ws.replay_mode == 0) then edited = true end
 end)
 
-add_hook("match_begin", "hookName", function()
+add_hook("match_begin", hookName, function()
     if autoModLoading and not customFindMod() then
         customDownloadMod()
         return
@@ -270,10 +265,10 @@ add_hook("match_begin", "hookName", function()
     ws = get_world_state()
     spawnStartSlider()
     spawnEndSlider()
-    updateRangeHeading() 
+    updateRangeHeading()
 end)
 
-add_hook("downloader_complete", "hookName", function()
+add_hook("downloader_complete", hookName, function()
     if (waitingForModDownload and customFindMod()) then
         custom_echo("Download complete for: " .. modname, COLORS.GREEN)
         waitingForModDownload = false
@@ -282,10 +277,18 @@ add_hook("downloader_complete", "hookName", function()
     end
 end)
 
-add_hook("key_up", "hookName", function(key)
-    if key == 282 and content.displayed then --F1
+add_hook("key_up", hookName, function(key)
+    if key ~= 282 then return end --F1
+    if content.displayed then 
         windowHolder:hide(true)
     else
         windowHolder:show(true)
     end
 end)
+
+windowHolder.killAction = function ()
+    remove_hooks(hookName)
+    custom_echo("Exit complete, matanee~~", COLORS.VIOLET)
+end
+
+custom_echo("Script active", COLORS.VIOLET)

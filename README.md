@@ -1,17 +1,32 @@
-This script is for Toribash videogame.
+<div>
+<h1>Replay Focus</h1>
 
-Script provides tools to improve replay creation and viewing experience.
+<p>This is set of tools targeted for replay making,
+main feature is locking replay to range of frames for improved focus on the portion and instant access after edit
+Imagine not having to wait like 3000 frames to view/edit portion of big rpl
+</p>
 
-Current features:
+<h2>Features</h2>
+<h3>Focus</h3>
+keeps replay within selected frames, when it's playing
+<h3>Mod Loading</h3>
+tries to load and enable mod if it is not found
+<h3>Set Default Textures</h3>
+quick toggle to keep textures and objects off when needed
 
-  Rewind (keeps replay within selected range automatically. Saves time and helps to focus on portion of longer replay)
-  
-  Default Textures: (automatically sets default textures when match starts)
-  
-  Mod Loading: (automatically tries to load and set mod once if it's not detected)
+<h2>Controls</h2>
 
-Planned features:
-  
-  Cutting portion of replay
-  
-  Combining replays
+UI provides simple checkbox toggles and two sliders to set a focus portion.
+"F1" key can be used to show/hide menu
+
+<h2>Installation</h2>
+
+download the script and toss it to the script folder of the game.
+you can then select it ingame from scripts section or use /ls replayfocus.lua
+
+<h2>Requirements</h2>
+enable replay speed setting (for cache, tries to enable if off)
+newer version of game is ideal
+new menu on? (for UI)
+
+</div>

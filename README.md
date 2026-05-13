@@ -6,6 +6,9 @@ main feature is locking replay to range of frames for improved focus on the port
 Imagine not having to wait like 3000 frames to view/edit portion of big rpl
 </p>
 
+<h2>Showcase</h2>
+https://youtu.be/nJgXl0Fa4pY
+
 <h2>Features</h2>
 <h3>Focus</h3>
 keeps replay within selected frames, when it's playing
